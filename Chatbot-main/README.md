@@ -25,7 +25,7 @@ npm install
 
 3. Create a `.env.local` file in the root directory and add your Groq API key:
 ```
-NEXT_PUBLIC_GROQ_API_KEY=your_api_key_here
+GROQ_API_KEY=your_api_key_here
 ```
 
 4. Run the development server:
@@ -49,14 +49,14 @@ npm run dev
 3. **Add Environment Variables:**
    - In your Vercel project dashboard, go to **Settings** → **Environment Variables**
    - Add variable:
-     - **Name:** `NEXT_PUBLIC_GROQ_API_KEY`
+     - **Name:** `GROQ_API_KEY`
      - **Value:** Your Groq API key
      - **Environment:** Select all (Production, Preview, Development)
 4. **Deploy:** Vercel will automatically deploy your project
 5. **Test:** Visit your Vercel URL to test the chat functionality
 
 ### Environment Variables Required:
-- `NEXT_PUBLIC_GROQ_API_KEY`: Your Groq API key (required for AI chat functionality)
+- `GROQ_API_KEY`: Your Groq API key (required for AI chat functionality)
 
 ## Technologies Used
 
