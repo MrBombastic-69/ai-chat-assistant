@@ -6,8 +6,19 @@ const systemPrompt = "What is the meaning of life?"; // Use your own system prom
 
 // POST function to handle incoming requests
 export async function POST(request) {
+  console.log("API route called");
+  
   try {
     const { messages, model } = await request.json();
+    console.log("Received request:", { model, messageCount: messages.length });
+    
+    if (!process.env.GROQ_API_KEY) {
+      console.error("GROQ_API_KEY not found in environment variables");
+      return Response.json(
+        { error: "API key not configured" },
+        { status: 500 }
+      );
+    }
     
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -28,11 +39,16 @@ export async function POST(request) {
       }),
     });
 
+    console.log("Groq API response status:", response.status);
+
     if (!response.ok) {
-      throw new Error(`Groq API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error("Groq API error:", errorText);
+      throw new Error(`Groq API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
+    console.log("Groq API response received");
     
     return Response.json({
       content: data.choices[0].message.content,
@@ -40,8 +56,20 @@ export async function POST(request) {
   } catch (error) {
     console.error("API Error:", error);
     return Response.json(
-      { error: "Failed to get response from AI" },
+      { error: "Failed to get response from AI: " + error.message },
       { status: 500 }
     );
   }
+}
+
+// Add OPTIONS method for CORS preflight requests
+export async function OPTIONS(request) {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
 }
