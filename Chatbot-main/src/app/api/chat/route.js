@@ -1,10 +1,3 @@
-import { NextResponse } from "next/server"; // Import NextResponse from Next.js for handling responses
-// import OpenAI from "openai"; // Import OpenAI library for interacting with the OpenAI API
-
-// System prompt for the AI, providing guidelines on how to respond to users
-const systemPrompt = "What is the meaning of life?"; // Use your own system prompt here
-
-// POST function to handle incoming requests
 export async function POST(request) {
   console.log("API route called");
   
@@ -72,4 +65,4 @@ export async function OPTIONS(request) {
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   });
-}
+} 
