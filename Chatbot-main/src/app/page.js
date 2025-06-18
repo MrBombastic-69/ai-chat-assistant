@@ -1,5 +1,4 @@
 "use client";
-const APIKEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
 
 import { useEffect, useRef, useState } from "react";
 import AIChat from "./components/AIChat";
@@ -44,52 +43,38 @@ export default function Home() {
 
     if (!message.trim()) return;
 
+    const userMessage = message;
     setMessage("");
     setMessages((messages) => [
       ...messages,
-      { role: "user", content: message },
+      { role: "user", content: userMessage },
       { role: "assistant", content: "" },
     ]);
 
     try {
-      const response = await fetch(
-        "https://api.groq.com/openai/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${APIKEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: selectedModel,
-            messages: [
-              {
-                role: "system",
-                content:
-                  "You are a helpful AI assistant who always responds in markdown format. Be concise and clear in your responses.",
-              },
-              ...messages.map(msg => ({ role: msg.role, content: msg.content })),
-              { role: "user", content: message },
-            ],
-          }),
-        }
-      );
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [
+            ...messages.map(msg => ({ role: msg.role, content: msg.content })),
+            { role: "user", content: userMessage },
+          ],
+          model: selectedModel,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      var val;
+      const data = await response.json();
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        val = value;
+      if (data.error) {
+        throw new Error(data.error);
       }
-
-      const text = decoder.decode(val);
 
       setLoading(false);
       setMessages((messages) => {
@@ -99,21 +84,23 @@ export default function Home() {
           ...otherMessages,
           {
             ...lastMessage,
-            content:
-              lastMessage.content +
-              JSON.parse(text.trim()).choices[0].message.content,
+            content: data.content,
           },
         ];
       });
     } catch (error) {
-      setMessages((messages) => [
-        ...messages,
-        {
-          role: "assistant",
-          content:
-            "I'm sorry, but I encountered an error. Please try again later.",
-        },
-      ]);
+      console.error("Error:", error);
+      setMessages((messages) => {
+        let lastMessage = messages[messages.length - 1];
+        let otherMessages = messages.slice(0, messages.length - 1);
+        return [
+          ...otherMessages,
+          {
+            ...lastMessage,
+            content: "I'm sorry, but I encountered an error. Please try again later.",
+          },
+        ];
+      });
       setLoading(false);
     }
   };
