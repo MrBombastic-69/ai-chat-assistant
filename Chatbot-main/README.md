@@ -14,7 +14,7 @@ A modern, responsive chat interface powered by Groq's AI models. Built with Next
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/MrBombastic-69/ai-chat-assistant.git
 cd Chatbot-main
 ```
 
@@ -35,14 +35,28 @@ npm run dev
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Deployment
+## Deployment on Vercel
 
-This project is configured for easy deployment on Vercel:
+### Prerequisites
+- A Groq API key from [https://console.groq.com/](https://console.groq.com/)
 
-1. Push your code to GitHub
-2. Import your repository on Vercel
-3. Add your environment variables in the Vercel dashboard
-4. Deploy!
+### Steps:
+1. **Push your code to GitHub** (already done!)
+2. **Import your repository on Vercel:**
+   - Go to [vercel.com](https://vercel.com)
+   - Click "New Project"
+   - Import your GitHub repository: `MrBombastic-69/ai-chat-assistant`
+3. **Add Environment Variables:**
+   - In your Vercel project dashboard, go to **Settings** → **Environment Variables**
+   - Add variable:
+     - **Name:** `NEXT_PUBLIC_GROQ_API_KEY`
+     - **Value:** Your Groq API key
+     - **Environment:** Select all (Production, Preview, Development)
+4. **Deploy:** Vercel will automatically deploy your project
+5. **Test:** Visit your Vercel URL to test the chat functionality
+
+### Environment Variables Required:
+- `NEXT_PUBLIC_GROQ_API_KEY`: Your Groq API key (required for AI chat functionality)
 
 ## Technologies Used
 
